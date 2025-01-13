@@ -1,0 +1,22 @@
+{
+  "name": "haskell-loader",
+  "version": "0.1.0",
+  "description": "Webpack loader for Haskell projects",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Swordlash/haskell-loader.git"
+  },
+  "keywords": [
+    "haskell",
+    "ghc",
+    "webpack",
+    "loader"
+  ],
+  "author": "Mateusz Goślinowski",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/Swordlash/haskell-loader/issues"
+  },
+  "homepage": "https://github.com/Swordlash/haskell-loader#readme"
+}
