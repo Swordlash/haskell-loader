@@ -1,5 +1,5 @@
 const { validate } = require('schema-utils');
-const { resolve, dirname, extname } = require('path');
+const { resolve, dirname } = require('path');
 const { execa } = require('execa');
 const { readFileSync } = require('fs');
 
@@ -33,25 +33,16 @@ module.exports = async function (_source) {
   const currentFolder = resolve(__dirname);
   const projectFolder = dirname(this.resourcePath);
 
-  var buildOption = '';
-  if (extname(this.resourcePath) == '.project') {
-    buildOption = `--project-file=${this.resourcePath}`;
-  }
-  else {
-    buildOption = `--project-dir=${projectFolder}`;
-  }
-
   // add dependency to the whole folder
   // this.addDependency(projectFolder);
 
   if (options['system-tools']) {
-    await execa('cabal', ['build', 'all', `--builddir=${currentFolder}`, buildOption ], { 
-      cwd: projectFolder,
-      stdio: 'inherit'
-    });
+    await execa('cabal', ['build', 'all', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}` ], { stdio: 'inherit' });
 
-    const res = await execa('cabal', ['-v0', `--builddir=${currentFolder}`, buildOption, 'exec', '--', 'which', options['executable'] ]);
-    return readFileSync(res.stdio);
+    const {stdout} = await execa('cabal', ['-v0', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}`, 'exec', '--', 'which', options['executable'] ]);
+
+    console.log("Output haskell file: " + stdout);
+    return readFileSync(stdout);
   }
   else {
     const { install, run } = require('@haskell-org/ghc-installer');
@@ -64,9 +55,11 @@ module.exports = async function (_source) {
       await install('cabal', options['install-cabal']);
     }
 
-    await run('cabal', ['build', 'all', `--builddir=${currentFolder}`, buildOption ]);
+    await run('cabal', ['build', 'all', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}` ]);
 
-    const res = await run('cabal', ['-v0', `--builddir=${currentFolder}`, buildOption, 'exec', '--', 'which', options['executable'] ]);
-    return readFileSync(res.stdio);
+    const {stdout} = await run('cabal', ['-v0', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}`, 'exec', '--', 'which', options['executable'] ]);
+
+    console.log("Output haskell file: " + stdout);
+    return readFileSync(stdout);
   }
 }
