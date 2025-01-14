@@ -1,7 +1,8 @@
-const { validate } = require('schema-utils');
-const { resolve, dirname, extname } = require('path');
-const { execa } = require('execa');
-const { readFileSync } = require('fs');
+import { validate } from 'schema-utils';
+import { resolve, dirname, extname } from 'path';
+import { execa } from 'execa';
+import { readFileSync } from 'fs';
+import { install, run } from '@haskell-org/ghc-installer';
 
 const schema = {
   type: 'object',
@@ -23,14 +24,14 @@ const schema = {
   }
 }
 
-module.exports = async function (_source) {
+export default async function (_source) {
   const options = this.getOptions();
   validate(schema, options, {
     name: 'Haskell loader',
     baseDataPath: 'options'
   });
 
-  const currentFolder = resolve(__dirname);
+  const currentFolder = resolve(import.meta.dirname);
   const projectFolder = dirname(this.resourcePath);
 
   var buildOpt = '';
@@ -53,8 +54,6 @@ module.exports = async function (_source) {
     return readFileSync(stdout);
   }
   else {
-    const { install, run } = require('@haskell-org/ghc-installer');
-
     if(options['install-ghc']) {
       await install('ghc', options['install-ghc']);
     }
