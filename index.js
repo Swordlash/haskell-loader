@@ -1,5 +1,5 @@
 const { validate } = require('schema-utils');
-const { resolve, dirname } = require('path');
+const { resolve, dirname, extname } = require('path');
 const { execa } = require('execa');
 const { readFileSync } = require('fs');
 
@@ -33,13 +33,21 @@ module.exports = async function (_source) {
   const currentFolder = resolve(__dirname);
   const projectFolder = dirname(this.resourcePath);
 
+  var buildOpt = '';
+  if (extname(this.resourcePath) === '.project') {
+    buildOpt = `--project-file=${this.resourcePath}`;
+  }
+  else {
+    buildOpt = `--project-dir=${projectFolder}`;
+  }
+
   // add dependency to the whole folder
   // this.addDependency(projectFolder);
 
   if (options['system-tools']) {
-    await execa('cabal', ['build', 'all', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}` ], { stdio: 'inherit' });
+    await execa('cabal', ['build', 'all', `--builddir=${currentFolder}`, buildOpt ], { stdio: 'inherit' });
 
-    const {stdout} = await execa('cabal', ['-v0', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}`, 'exec', '--', 'which', options['executable'] ]);
+    const {stdout} = await execa('cabal', ['-v0', `--builddir=${currentFolder}`, buildOpt, 'exec', '--', 'which', options['executable'] ]);
 
     console.log("Output haskell file: " + stdout);
     return readFileSync(stdout);
