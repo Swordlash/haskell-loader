@@ -1,5 +1,5 @@
 {
-  "name": "haskell-loader",
+  "name": "@haskell-org/haskell-loader",
   "version": "0.1.0",
   "description": "Webpack loader for Haskell projects",
   "main": "index.js",
@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/Swordlash/haskell-loader/issues"
   },
-  "homepage": "https://github.com/Swordlash/haskell-loader#readme"
+  "homepage": "https://github.com/Swordlash/haskell-loader#readme",
+  "dependencies": {
+    "@haskell-org/ghc-installer": "file:../ghc-installer-npm/haskell-org-ghc-installer-0.1.0.tgz",
+    "execa": "^9.5.2",
+    "schema-utils": "^4.3.0"
+  }
 }
