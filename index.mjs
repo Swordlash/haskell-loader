@@ -60,11 +60,12 @@ export default async function (_source) {
 
     if(options['install-cabal']) {
       await install('cabal', options['install-cabal']);
+      await run('cabal', ['update']);
     }
 
-    await run('cabal', ['build', 'all', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}` ]);
+    await run('cabal', ['build', 'all', `--builddir=${currentFolder}`, buildOpt]);
 
-    const {stdout} = await run('cabal', ['-v0', `--builddir=${currentFolder}`, `--project-dir=${projectFolder}`, 'exec', '--', 'which', options['executable'] ]);
+    const {stdout} = await run('cabal', ['-v0', `--builddir=${currentFolder}`, buildOpt, 'exec', '--', 'which', options['executable'] ]);
 
     console.log("Output haskell file: " + stdout);
     return readFileSync(stdout);
