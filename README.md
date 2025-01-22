@@ -2,7 +2,11 @@
 
 Webpack loader for .cabal projects. Allows you to specify a `.cabal` or `.project` file as an entry in Webpack projects.
 
-Example:
+## NOTE
+The repository has been upstreamed to GHC gitlab: https://gitlab.haskell.org/ghc/npm-packages/haskell-loader
+
+## Example
+
 ```js
 {
   test: /\.(cabal|project)$/,
